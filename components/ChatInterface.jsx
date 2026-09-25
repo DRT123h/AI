@@ -54,7 +54,10 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-[80vh] max-w-2xl mx-auto border border-gray-200 rounded-2xl shadow-sm bg-white" dir="rtl">
+    <div
+      className="flex flex-col w-full sm:max-w-2xl h-[calc(100dvh-140px)] sm:h-[75vh] mx-auto border border-gray-200 sm:rounded-2xl rounded-xl shadow-sm bg-white"
+      dir="rtl"
+    >
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && (
           <p className="text-center text-gray-400 mt-10">ابدأ محادثتك الآن ✨</p>
