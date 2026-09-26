@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/* ----------------------------- Icons ----------------------------- */
+/* ----------------------------- Icons & Logo ----------------------------- */
 const Icon = {
   Plus: (p) => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" {...p}>
@@ -254,7 +254,7 @@ export default function ChatInterface() {
         {
           id: crypto.randomUUID(),
           role: "assistant",
-          content: "تم استلام رسالتك بنجاح! التصميم الآن متناسق كلياً مع الشعار وأسلوب النيون العصرى.",
+          content: "تم استلام رسالتك بنجاح! الواجهة الآن متناسقة كلياً مع الشعار وأسلوب النيون العصري.",
         },
       ]);
     }, 800);
@@ -272,7 +272,6 @@ export default function ChatInterface() {
       />
 
       <main className="flex min-w-0 flex-1 flex-col bg-[#0b0f17] relative">
-        {/* Glow ambient lights */}
         <div className="absolute top-0 right-1/4 h-72 w-72 bg-cyan-500/10 blur-[120px] pointer-events-none rounded-full" />
         <div className="absolute bottom-10 left-1/4 h-72 w-72 bg-emerald-500/10 blur-[120px] pointer-events-none rounded-full" />
 
