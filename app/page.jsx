@@ -52,7 +52,7 @@ function LoginScreen() {
         <div className="relative mb-10">
           <div className="absolute inset-0 scale-125 rounded-full bg-gradient-to-tr from-[#00bfa7] to-[#00fa5a] opacity-40 blur-2xl" />
           <div className="relative bg-white rounded-3xl px-7 py-5 shadow-[0_0_45px_rgba(0,250,90,0.3)]">
-            <img src="/logo.svg" alt="Verdia" className="h-16 w-auto" />
+            <img src="/logo.png" alt="Verdia" className="h-16 w-auto" />
           </div>
         </div>
 
@@ -136,7 +136,7 @@ export default function Page() {
       <BackgroundGlow />
       <header className="relative flex items-center justify-between px-4 sm:px-8 py-3 sm:py-4 border-b border-white/10 sticky top-0 z-30 bg-[#150a29]/80 backdrop-blur">
         <div className="bg-white rounded-xl px-2.5 py-1.5">
-          <img src="/logo.svg" alt="Verdia" className="h-6 w-auto" />
+          <img src="/logo.png" alt="Verdia" className="h-6 w-auto" />
         </div>
         <AuthButton />
       </header>
