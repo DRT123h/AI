@@ -2,135 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-/* === Reset Global Standards === */
+:root {
+  --verdia-bg-start: #150a29;
+  --verdia-bg-end: #2c1a54;
+}
+
 * {
-  box-sizing: border-box !important;
-  margin: 0;
-  padding: 0;
+  box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
-  width: 100%;
-  background-color: #0d1117 !important;
-  color: #e6edf3 !important;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-  direction: rtl !important;
-  overflow: hidden !important;
 }
 
-/* === Fix Giant Icons === */
-svg {
-  width: 20px !important;
-  height: 20px !important;
-  max-width: 20px !important;
-  max-height: 20px !important;
-  flex-shrink: 0 !important;
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: linear-gradient(160deg, var(--verdia-bg-start), var(--verdia-bg-end));
+  color: #f5f3ff;
+  font-family: var(--font-cairo), system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
 }
 
-/* === Master Layout Wrapper === */
-body > div, main {
-  display: flex !important;
-  flex-direction: row !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  overflow: hidden !important;
+input::placeholder {
+  color: rgba(245, 243, 255, 0.35);
 }
 
-/* === Sidebar Styling === */
-aside, [class*="sidebar"] {
-  width: 280px !important;
-  min-width: 280px !important;
-  max-width: 280px !important;
-  height: 100vh !important;
-  background-color: #161b22 !important;
-  border-left: 1px solid #30363d !important;
-  display: flex !important;
-  flex-direction: column !important;
-  padding: 16px !important;
-  gap: 12px !important;
-  position: relative !important;
-  zIndex: 10 !important;
+::-webkit-scrollbar {
+  width: 8px;
 }
-
-/* Sidebar Buttons & Chat List Items */
-aside button, aside a, [class*="sidebar"] button {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  width: 100% !important;
-  padding: 10px 14px !important;
-  border-radius: 8px !important;
-  background-color: #21262d !important;
-  color: #c9d1d9 !important;
-  border: 1px solid #30363d !important;
-  font-size: 14px !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-}
-
-aside button:hover {
-  background-color: #30363d !important;
-  color: #ffffff !important;
-}
-
-/* === Main Chat Area === */
-section, [class*="chat-main"], [class*="container"] {
-  flex: 1 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100vh !important;
-  background-color: #0d1117 !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-/* Messages Scrollable Container */
-[class*="messages"], [class*="chat-history"] {
-  flex: 1 !important;
-  overflow-y: auto !important;
-  padding: 24px 10% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 20px !important;
-}
-
-/* Code Blocks Styling */
-pre, code {
-  background-color: #161b22 !important;
-  border: 1px solid #30363d !important;
-  border-radius: 8px !important;
-  padding: 14px !important;
-  color: #7ee787 !important;
-  font-family: 'Fira Code', monospace !important;
-  direction: ltr !important;
-  text-align: left !important;
-  overflow-x: auto !important;
-  margin: 10px 0 !important;
-  display: block !important;
-}
-
-/* === Input Form Area === */
-form, [class*="input-container"] {
-  padding: 16px 10% 24px 10% !important;
-  background-color: #0d1117 !important;
-  display: flex !important;
-  gap: 10px !important;
-  align-items: center !important;
-}
-
-textarea, input[type="text"] {
-  flex: 1 !important;
-  background-color: #161b22 !important;
-  color: #f0f6fc !important;
-  border: 1px solid #30363d !important;
-  border-radius: 12px !important;
-  padding: 12px 16px !important;
-  font-size: 15px !important;
-  outline: none !important;
-  resize: none !important;
-}
-
-textarea:focus, input[type="text"]:focus {
-  border-color: #58a6ff !important;
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
 }

@@ -55,12 +55,12 @@ export default function ChatInterface() {
 
   return (
     <div
-      className="flex flex-col w-full sm:max-w-2xl h-[calc(100dvh-140px)] sm:h-[75vh] mx-auto border border-gray-200 sm:rounded-2xl rounded-xl shadow-sm bg-white"
+      className="flex flex-col w-full sm:max-w-2xl h-[calc(100dvh-140px)] sm:h-[75vh] mx-auto border border-white/10 sm:rounded-2xl rounded-xl bg-white/5 backdrop-blur"
       dir="rtl"
     >
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && (
-          <p className="text-center text-gray-400 mt-10">ابدأ محادثتك الآن ✨</p>
+          <p className="text-center text-white/30 mt-10">ابدأ محادثتك الآن ✨</p>
         )}
 
         {messages.map((msg, i) => (
@@ -72,7 +72,9 @@ export default function ChatInterface() {
           >
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                msg.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
+                msg.role === 'user'
+                  ? 'bg-gradient-to-l from-[#00bfa7] to-[#00fa5a] text-white'
+                  : 'bg-white/10 text-white/70'
               }`}
             >
               {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
@@ -80,8 +82,8 @@ export default function ChatInterface() {
             <div
               className={`px-4 py-2 rounded-2xl max-w-[75%] whitespace-pre-wrap ${
                 msg.role === 'user'
-                  ? 'bg-blue-500 text-white rounded-tr-sm'
-                  : 'bg-gray-100 text-gray-800 rounded-tl-sm'
+                  ? 'bg-gradient-to-l from-[#00bfa7] to-[#00fa5a] text-white rounded-tr-sm'
+                  : 'bg-white/10 text-white/90 rounded-tl-sm'
               }`}
             >
               {msg.content}
@@ -90,7 +92,7 @@ export default function ChatInterface() {
         ))}
 
         {isLoading && (
-          <div className="flex items-center gap-2 text-gray-400">
+          <div className="flex items-center gap-2 text-white/30">
             <Loader2 size={16} className="animate-spin" />
             <span>جارٍ الكتابة...</span>
           </div>
@@ -99,19 +101,19 @@ export default function ChatInterface() {
         <div ref={scrollRef} />
       </div>
 
-      <div className="border-t border-gray-200 p-3 flex items-center gap-2">
+      <div className="border-t border-white/10 p-3 flex items-center gap-2">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="اكتب رسالتك هنا..."
-          className="flex-1 border border-gray-300 rounded-full px-4 py-2 outline-none focus:ring-2 focus:ring-blue-400"
+          className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-white outline-none focus:ring-2 focus:ring-[#00bfa7]/50"
         />
         <button
           onClick={handleSend}
           disabled={isLoading || !input.trim()}
-          className="bg-blue-500 text-white p-2 rounded-full disabled:opacity-40 hover:bg-blue-600 transition"
+          className="bg-gradient-to-l from-[#00bfa7] to-[#00fa5a] text-white p-2 rounded-full disabled:opacity-30 hover:brightness-110 transition"
         >
           <Send size={18} />
         </button>
