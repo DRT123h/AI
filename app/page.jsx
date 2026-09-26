@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { supabase } from '@/lib/supabaseClient';
 
 /* ----------------------------- Neon Triangle Logo ----------------------------- */
 function BrandLogo({ className = "w-28 h-28" }) {
@@ -31,21 +31,36 @@ function BrandLogo({ className = "w-28 h-28" }) {
 }
 
 export default function AuthPage() {
-  // Modes: 'login' | 'signup' | 'forgot' | 'verify_otp'
-  const [mode, setMode] = useState('login');
+  const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'forgot' | 'verify_otp'
   
-  // Form fields
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   
-  // UI States
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
 
-  // Handle Form Submission
+  // Google Sign In
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setStatusMessage({ type: '', text: '' });
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/` : undefined,
+      },
+    });
+
+    if (error) {
+      setStatusMessage({ type: 'error', text: error.message });
+      setIsLoading(false);
+    }
+  };
+
+  // Form Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -53,66 +68,53 @@ export default function AuthPage() {
 
     try {
       if (mode === 'login') {
-        // Sign In Logic
-        const res = await signIn('credentials', {
-          redirect: false,
-          email,
-          password,
-        });
-
-        if (res?.error) {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
           setStatusMessage({ type: 'error', text: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.' });
         } else {
-          setStatusMessage({ type: 'success', text: 'تم تسجيل الدخول بنجاح! جاري التوجيه...' });
+          setStatusMessage({ type: 'success', text: 'تم تسجيل الدخول بنجاح!' });
         }
       } else if (mode === 'signup') {
-        // Sign Up Logic
-        const res = await fetch('/api/auth/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, password }),
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { full_name: name } },
         });
-        const data = await res.json();
-
-        if (!res.ok) {
-          setStatusMessage({ type: 'error', text: data.message || 'حدث خطأ أثناء إنشاء الحساب.' });
+        if (error) {
+          setStatusMessage({ type: 'error', text: error.message });
         } else {
-          setStatusMessage({ type: 'success', text: 'تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.' });
-          setTimeout(() => setMode('login'), 2000);
+          setStatusMessage({ type: 'success', text: 'تم إنشاء الحساب! يرجى مراجعة بريدك الإلكتروني للتأكيد.' });
+          setTimeout(() => setMode('login'), 2500);
         }
       } else if (mode === 'forgot') {
-        // Send OTP / Reset Code Logic
-        const res = await fetch('/api/auth/forgot-password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
-        });
-        const data = await res.json();
-
-        if (!res.ok) {
-          setStatusMessage({ type: 'error', text: data.message || 'لم نتمكن من إرسال الرمز، تحقق من البريد.' });
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        if (error) {
+          setStatusMessage({ type: 'error', text: error.message });
         } else {
-          setStatusMessage({ type: 'success', text: 'تم إرسال رمز التحقق المكون من 6 أرقام إلى بريدك الإلكتروني!' });
+          setStatusMessage({ type: 'success', text: 'تم إرسال رابط/رمز إعادة التعيين إلى بريدك الإلكتروني!' });
           setMode('verify_otp');
         }
       } else if (mode === 'verify_otp') {
-        // Verify OTP Logic
-        const res = await fetch('/api/auth/reset-password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, otpCode, newPassword: password }),
+        const { error: verifyError } = await supabase.auth.verifyOtp({
+          email,
+          token: otpCode,
+          type: 'recovery',
         });
-        const data = await res.json();
 
-        if (!res.ok) {
-          setStatusMessage({ type: 'error', text: data.message || 'الرمز غير صحيح أو انتهت صلاحيته.' });
+        if (verifyError) {
+          setStatusMessage({ type: 'error', text: 'رمز التحقق غير صحيح أو انتهت صلاحيته.' });
         } else {
-          setStatusMessage({ type: 'success', text: 'تم تغيير كلمة المرور بنجاح! قم بتسجيل الدخول الآن.' });
-          setTimeout(() => setMode('login'), 2000);
+          const { error: updateError } = await supabase.auth.updateUser({ password });
+          if (updateError) {
+            setStatusMessage({ type: 'error', text: updateError.message });
+          } else {
+            setStatusMessage({ type: 'success', text: 'تم تغيير كلمة المرور بنجاح!' });
+            setTimeout(() => setMode('login'), 2000);
+          }
         }
       }
     } catch (err) {
-      setStatusMessage({ type: 'error', text: 'حدث خطأ في الاتصال بالسيرفر.' });
+      setStatusMessage({ type: 'error', text: 'حدث خطأ أثناء الاتصال بالخدمة.' });
     } finally {
       setIsLoading(false);
     }
@@ -120,13 +122,11 @@ export default function AuthPage() {
 
   return (
     <div dir="rtl" className="min-h-screen w-full bg-[#0b0f17] text-slate-100 flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Background ambient lighting */}
       <div className="absolute top-1/4 right-1/3 h-96 w-96 bg-cyan-500/10 blur-[140px] pointer-events-none rounded-full" />
       <div className="absolute bottom-1/4 left-1/3 h-96 w-96 bg-emerald-500/10 blur-[140px] pointer-events-none rounded-full" />
 
       <main className="w-full max-w-lg glass-panel rounded-3xl p-8 sm:p-12 border border-white/10 shadow-2xl neon-glow relative z-10 flex flex-col items-center">
         
-        {/* Logo */}
         <div className="mb-6 flex flex-col items-center">
           <BrandLogo className="w-28 h-28 mb-2" />
           <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">
@@ -137,7 +137,6 @@ export default function AuthPage() {
           </h1>
         </div>
 
-        {/* Status Message */}
         {statusMessage.text && (
           <div className={`w-full mb-6 p-4 rounded-2xl text-sm font-medium border text-center ${
             statusMessage.type === 'error' 
@@ -148,13 +147,13 @@ export default function AuthPage() {
           </div>
         )}
 
-        {/* Google Sign-in Button (Shown in Login and Signup modes) */}
         {(mode === 'login' || mode === 'signup') && (
           <>
             <button
-              onClick={() => signIn('google')}
+              onClick={handleGoogleSignIn}
               type="button"
-              className="w-full flex items-center justify-center gap-3 bg-white text-slate-900 font-semibold text-base sm:text-lg py-3.5 px-6 rounded-2xl shadow-lg hover:bg-slate-100 transition-all hover:scale-[1.01] active:scale-[0.99]"
+              disabled={isLoading}
+              className="w-full flex items-center justify-center gap-3 bg-white text-slate-900 font-semibold text-base sm:text-lg py-3.5 px-6 rounded-2xl shadow-lg hover:bg-slate-100 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
             >
               <svg className="w-6 h-6" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -173,10 +172,7 @@ export default function AuthPage() {
           </>
         )}
 
-        {/* Dynamic Form */}
         <form onSubmit={handleSubmit} className="w-full space-y-4">
-          
-          {/* Full Name field (Signup mode only) */}
           {mode === 'signup' && (
             <div>
               <input
@@ -190,7 +186,6 @@ export default function AuthPage() {
             </div>
           )}
 
-          {/* Email field (All modes except verify_otp) */}
           {mode !== 'verify_otp' && (
             <div>
               <input
@@ -204,7 +199,6 @@ export default function AuthPage() {
             </div>
           )}
 
-          {/* Password field (Login, Signup, and verify_otp modes) */}
           {mode !== 'forgot' && (
             <div className="relative">
               <input
@@ -228,7 +222,6 @@ export default function AuthPage() {
             </div>
           )}
 
-          {/* OTP Code field (verify_otp mode only) */}
           {mode === 'verify_otp' && (
             <div>
               <input
@@ -243,7 +236,6 @@ export default function AuthPage() {
             </div>
           )}
 
-          {/* Forgot Password Link (Login mode only) */}
           {mode === 'login' && (
             <div className="text-left">
               <button
@@ -256,13 +248,12 @@ export default function AuthPage() {
             </div>
           )}
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isLoading}
             className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-base sm:text-lg py-3.5 px-6 rounded-2xl shadow-lg transition-all hover:scale-[1.01] active:scale-[0.99] mt-2 disabled:opacity-50"
           >
-            {isLoading ? 'جاري التحميل...' : (
+            {isLoading ? 'جاري المعالجة...' : (
               mode === 'login' ? 'تسجيل الدخول' :
               mode === 'signup' ? 'إنشاء حساب' :
               mode === 'forgot' ? 'إرسال رمز التحقق' : 'حفظ كلمة المرور الجديدة'
@@ -270,7 +261,6 @@ export default function AuthPage() {
           </button>
         </form>
 
-        {/* Toggle Mode Links */}
         <div className="mt-8 text-center text-sm text-slate-400">
           {mode === 'login' && (
             <p>
