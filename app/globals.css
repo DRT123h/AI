@@ -1,11 +1,9 @@
 @import "tailwindcss";
 
-@layer base {
-  body {
-    background-color: #0b0f17;
-    color: #f3f4f6;
-    font-family: 'Cairo', system-ui, sans-serif;
-  }
+body {
+  background-color: #0b0f17;
+  color: #f3f4f6;
+  font-family: 'Cairo', system-ui, sans-serif;
 }
 
 .neon-border-gradient {
