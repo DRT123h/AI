@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-);
+// تهيئة Supabase مباشرة
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 /* ----------------------------- Neon Triangle Logo ----------------------------- */
 function BrandLogo({ className = "w-28 h-28" }) {
@@ -96,7 +96,7 @@ export default function AuthPage() {
         if (error) {
           setStatusMessage({ type: 'error', text: error.message });
         } else {
-          setStatusMessage({ type: 'success', text: 'تم إرسال رابط/رمز إعادة التعيين إلى بريدك الإلكتروني!' });
+          setStatusMessage({ type: 'success', text: 'تم إرسال رمز التحقق إلى بريدك الإلكتروني!' });
           setMode('verify_otp');
         }
       } else if (mode === 'verify_otp') {
