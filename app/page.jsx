@@ -29,17 +29,36 @@ function GoogleIcon() {
   );
 }
 
+function BackgroundGlow() {
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      <div className="animate-float absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[#00bfa7] opacity-25 blur-[100px]" />
+      <div
+        className="animate-float absolute -bottom-24 -left-16 w-80 h-80 rounded-full bg-[#00fa5a] opacity-20 blur-[110px]"
+        style={{ animationDelay: '2s' }}
+      />
+    </div>
+  );
+}
+
 function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-[100dvh] flex items-center justify-center px-4">
-      <div className="w-full max-w-sm flex flex-col items-center">
-        <img src="/logo.svg" alt="Verdia" className="h-14 w-auto mb-10" />
+    <div className="relative min-h-[100dvh] flex items-center justify-center px-4 overflow-hidden">
+      <BackgroundGlow />
+
+      <div className="relative w-full max-w-sm flex flex-col items-center animate-fade-in-up">
+        <div className="relative mb-10">
+          <div className="absolute inset-0 scale-125 rounded-full bg-gradient-to-tr from-[#00bfa7] to-[#00fa5a] opacity-40 blur-2xl" />
+          <div className="relative bg-white rounded-3xl px-7 py-5 shadow-[0_0_45px_rgba(0,250,90,0.3)]">
+            <img src="/logo.svg" alt="Verdia" className="h-16 w-auto" />
+          </div>
+        </div>
 
         <button
           onClick={() => signIn('google')}
-          className="w-full flex items-center justify-center gap-2 bg-white text-gray-800 font-medium py-3 rounded-xl shadow-md hover:shadow-lg active:scale-[0.99] transition-all mb-6"
+          className="animate-glow w-full flex items-center justify-center gap-2 bg-white text-gray-800 font-medium py-3 rounded-xl hover:brightness-105 active:scale-[0.99] transition-all mb-6"
         >
           <GoogleIcon />
           تسجيل الدخول باستخدام جوجل
@@ -80,7 +99,7 @@ function LoginScreen() {
 
           <button
             disabled
-            className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-l from-[#00bfa7] to-[#00fa5a] cursor-not-allowed"
+            className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-l from-[#00bfa7] to-[#00fa5a] shadow-[0_0_25px_rgba(0,250,90,0.3)] cursor-not-allowed"
           >
             تسجيل الدخول
           </button>
@@ -113,13 +132,16 @@ export default function Page() {
   }
 
   return (
-    <main className="min-h-[100dvh] flex flex-col">
-      <header className="flex items-center justify-between px-4 sm:px-8 py-3 sm:py-4 border-b border-white/10 sticky top-0 z-30 bg-[#150a29]/80 backdrop-blur">
-        <img src="/logo.svg" alt="Verdia" className="h-7 w-auto" />
+    <main className="relative min-h-[100dvh] flex flex-col overflow-hidden">
+      <BackgroundGlow />
+      <header className="relative flex items-center justify-between px-4 sm:px-8 py-3 sm:py-4 border-b border-white/10 sticky top-0 z-30 bg-[#150a29]/80 backdrop-blur">
+        <div className="bg-white rounded-xl px-2.5 py-1.5">
+          <img src="/logo.svg" alt="Verdia" className="h-6 w-auto" />
+        </div>
         <AuthButton />
       </header>
 
-      <div className="flex-1 flex items-center justify-center p-3 sm:p-6">
+      <div className="relative flex-1 flex items-center justify-center p-3 sm:p-6">
         <ChatInterface />
       </div>
     </main>

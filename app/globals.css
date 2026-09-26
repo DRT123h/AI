@@ -5,6 +5,7 @@
 :root {
   --verdia-bg-start: #150a29;
   --verdia-bg-end: #2c1a54;
+  color-scheme: dark;
 }
 
 * {
@@ -34,4 +35,44 @@ input::placeholder {
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 999px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s ease-out both;
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(0, 250, 90, 0.25), 0 0 0 rgba(0, 191, 167, 0);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(0, 250, 90, 0.45), 0 0 15px rgba(0, 191, 167, 0.25);
+  }
+}
+.animate-glow {
+  animation: pulseGlow 2.6s ease-in-out infinite;
+}
+
+@keyframes floatBlob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(20px, -20px) scale(1.08);
+  }
+}
+.animate-float {
+  animation: floatBlob 8s ease-in-out infinite;
 }

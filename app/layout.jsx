@@ -16,6 +16,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl" className={cairo.variable}>
+      <head>
+        <meta name="color-scheme" content="dark" />
+      </head>
       <body className="font-cairo">
         <Providers>{children}</Providers>
       </body>
